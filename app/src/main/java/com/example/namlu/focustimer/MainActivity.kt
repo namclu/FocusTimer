@@ -54,8 +54,8 @@ class MainActivity : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 timeLeftInMilliseconds = millisUntilFinished
                 progressBarUpdate?.visibility = View.VISIBLE
-                // progressBarStatic act like an initial placeholder, then disappears when the
-                // timer starts so that progressBarUpdate take over and update itself
+                // progressBarStatic acts like an initial placeholder, then disappears when the
+                // timer starts so that progressBarUpdate takes over and updates itself
                 progressBarStatic?.visibility = View.INVISIBLE
 
                 updateCountDownText()
