@@ -50,7 +50,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        countDownTimer = object : CountDownTimer(timeLeftInMilliseconds, ONE_SEC_IN_MILLISECONDS.toLong()) {
+        // In the countdown interval, by subtracting time from the interval, it fixes a bug where
+        // timer would stop with 00:01 left and also makes the progress bar update more smoothly
+        countDownTimer = object : CountDownTimer(timeLeftInMilliseconds,
+                ONE_SEC_IN_MILLISECONDS.toLong() - 900) {
             override fun onTick(millisUntilFinished: Long) {
                 timeLeftInMilliseconds = millisUntilFinished
                 progressBarUpdate?.visibility = View.VISIBLE
