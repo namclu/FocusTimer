@@ -3,27 +3,37 @@ package com.example.namlu.focustimer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 
 class TimerFragment : Fragment() {
+
+    // Progress bar and views
     private var progressBarStatic: ProgressBar? = null
     private var progressBarUpdate: ProgressBar? = null
     private var textViewCountDownTimer: TextView? = null
     private var buttonTimerStartPause: Button? = null
     private var buttonTimerReset: Button? = null
+    private var buttonTimerSet: Button? = null
 
+    // Countdown timer
     private var countDownTimer: CountDownTimer? = null
-    var timeLeftInMilliseconds: Long = TEN_MINUTES_IN_MILLISECONDS.toLong() // 10 minutes
+
+    // Timer stuff
+    // TODO don't use hardcoded time value
+    var timeLeftInMilliseconds: Long = TEN_SECONDS_IN_MILLISECONDS.toLong()
     var isTimerRunning: Boolean = false
 
     companion object {
+        const val TAG = "TimerFragment"
         const val ONE_SEC_IN_MILLISECONDS = 1000
-        const val TEN_MINUTES_IN_MILLISECONDS = 10000
+        const val TEN_SECONDS_IN_MILLISECONDS = 10000
 
         fun newInstance() : TimerFragment {
             return TimerFragment()
@@ -45,6 +55,7 @@ class TimerFragment : Fragment() {
         // Find buttons
         buttonTimerStartPause = view.findViewById(R.id.btn_timer_start_pause)
         buttonTimerReset = view.findViewById(R.id.btn_timer_reset)
+        buttonTimerSet = view.findViewById(R.id.btn_timer_set)
 
         return view
     }
@@ -64,6 +75,12 @@ class TimerFragment : Fragment() {
         buttonTimerReset?.setOnClickListener {
             resetTimer()
             resetProgressBar()
+        }
+
+        buttonTimerSet?.setOnClickListener {
+            Log.d(TAG, "setTime button clicked")
+            val dialog: SetTimerDialog = SetTimerDialog.newInstance()
+            dialog.show(fragmentManager, TAG)
         }
 
         updateCountDownText()
@@ -110,7 +127,7 @@ class TimerFragment : Fragment() {
     }
 
     private fun resetTimer() {
-        timeLeftInMilliseconds = TEN_MINUTES_IN_MILLISECONDS.toLong()
+        timeLeftInMilliseconds = TEN_SECONDS_IN_MILLISECONDS.toLong()
         buttonTimerReset?.visibility = View.INVISIBLE
         buttonTimerStartPause?.visibility = View.VISIBLE
 
@@ -127,13 +144,13 @@ class TimerFragment : Fragment() {
 
     // Update timer bar progress as time progresses
     private fun updateProgressBar() {
-        progressBarUpdate?.max = TEN_MINUTES_IN_MILLISECONDS
+        progressBarUpdate?.max = TEN_SECONDS_IN_MILLISECONDS
         progressBarUpdate?.progress = timeLeftInMilliseconds.toInt()
     }
 
     // Reset timer bar progress when user hits the "reset" button
     private fun resetProgressBar() {
-        progressBarUpdate?.progress = TEN_MINUTES_IN_MILLISECONDS
+        progressBarUpdate?.progress = TEN_SECONDS_IN_MILLISECONDS
         progressBarUpdate?.visibility = View.VISIBLE
     }
 }
