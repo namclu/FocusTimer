@@ -37,16 +37,14 @@ class SetTimerDialog : DialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.dialog_set_timer, container, false)
+
+        // Find views
         editTextInputTime = view.findViewById(R.id.et_input_time)
         buttonSetTime = view.findViewById(R.id.btn_set_time)
-
-        return view
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         buttonSetTime?.setOnClickListener {
             Log.d(TAG, "buttonSetTime clicked")
@@ -68,6 +66,8 @@ class SetTimerDialog : DialogFragment() {
                 dialog.dismiss()
             }
         }
+
+        return view
     }
 
     // Interface to send time to caller

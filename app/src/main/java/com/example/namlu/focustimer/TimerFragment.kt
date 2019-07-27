@@ -40,14 +40,13 @@ class TimerFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?): View? {
+
+        // Inflate the layout for this fragment
+        val view: View = inflater.inflate(R.layout.fragment_timer, container, false)
 
         // Find views
-        val view: View = inflater.inflate(R.layout.fragment_timer, container, false)
         progressBarStatic = view.findViewById(R.id.pbar_static)
         progressBarUpdate = view.findViewById(R.id.pbar_update)
         textViewCountDownTimer = view.findViewById(R.id.tv_count_down_timer)
@@ -56,12 +55,6 @@ class TimerFragment : Fragment() {
         buttonTimerStartPause = view.findViewById(R.id.btn_timer_start_pause)
         buttonTimerReset = view.findViewById(R.id.btn_timer_reset)
         buttonTimerSet = view.findViewById(R.id.btn_timer_set)
-
-        return view
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         // Setup button actions
         buttonTimerStartPause?.setOnClickListener {
@@ -84,6 +77,8 @@ class TimerFragment : Fragment() {
         }
 
         updateCountDownText()
+
+        return view
     }
 
     private fun startTimer() {
