@@ -4,7 +4,7 @@
     <!-- button text -->
     <string name="btn_text_pause">pause</string>
     <string name="btn_text_start">start</string>
-    <string name="btn_text_ok">ok</string>
+    <string name="btn_text_ok">OK</string>
 
     <!-- strings -->
     <string name="hint_in_minutes">In Minutes</string>
