@@ -82,6 +82,7 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
         startTimeInMilliseconds =
                 timeInMillis * MILLIS_IN_ONE_SECOND * SECONDS_IN_ONE_MINUTE.toLong()
         resetTimer()
+        resetProgressBar()
     }
 
     private fun startTimer() {
@@ -97,37 +98,31 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
                 progressBarStatic?.visibility = View.INVISIBLE
                 updateCountDownText()
                 updateProgressBar()
+                println("timeLeftInMilliseconds = $timeLeftInMilliseconds")
             }
 
             // When onFinish() is called, set the button text to "start", make it invisible, then
             // show the "reset" button
             override fun onFinish() {
                 isTimerRunning = false
-                buttonTimerStartPause?.text = getString(R.string.btn_text_start)
-                buttonTimerStartPause?.visibility = View.INVISIBLE
-                buttonTimerReset?.visibility = View.VISIBLE
-
-                progressBarUpdate?.visibility = View.INVISIBLE
+                updateButtonVisibility()
             }
         }.start()
 
         isTimerRunning = true
-        buttonTimerStartPause?.text = getString(R.string.btn_text_pause)
-        buttonTimerReset?.visibility = View.INVISIBLE
+        updateButtonVisibility()
     }
 
     private fun pauseTimer() {
-        isTimerRunning = false
         countDownTimer?.cancel()
-        buttonTimerStartPause?.text = getString(R.string.btn_text_start)
-        buttonTimerReset?.visibility = View.VISIBLE
+        isTimerRunning = false
+        updateButtonVisibility()
     }
 
     private fun resetTimer() {
         timeLeftInMilliseconds = startTimeInMilliseconds
-        buttonTimerReset?.visibility = View.INVISIBLE
-        buttonTimerStartPause?.visibility = View.VISIBLE
-
+        isTimerRunning = false
+        updateButtonVisibility()
         updateCountDownText()
     }
 
@@ -138,7 +133,39 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
         textViewCountDownTimer?.text = String.format("%02d:%02d", minutes, seconds)
     }
 
-    // Todo Add method updateButtonVisibility() which will handle the visibility of buttons
+    private fun updateButtonVisibility() {
+        // If timer is running, only show the pause button and set other buttons to invisible
+        if (isTimerRunning) {
+            buttonTimerStartPause?.text = getString(R.string.btn_text_pause)
+            buttonTimerStartPause?.visibility = View.VISIBLE
+            buttonTimerReset?.visibility = View.INVISIBLE
+            buttonTimerSet?.visibility = View.INVISIBLE
+            // If timer is not running, there's 3 possibilities:
+        } else {
+            buttonTimerStartPause?.text = getString(R.string.btn_text_start)
+            when {
+                // 1) time has been set and not started
+                timeLeftInMilliseconds == startTimeInMilliseconds -> {
+                    buttonTimerStartPause?.visibility = View.VISIBLE
+                    buttonTimerReset?.visibility = View.INVISIBLE
+                    buttonTimerSet?.visibility = View.VISIBLE
+                }
+                // 2) timer has reached 0
+                timeLeftInMilliseconds < MILLIS_IN_ONE_SECOND -> {
+                    buttonTimerStartPause?.visibility = View.INVISIBLE
+                    buttonTimerReset?.visibility = View.VISIBLE
+                    buttonTimerSet?.visibility = View.VISIBLE
+                    progressBarUpdate?.visibility = View.INVISIBLE
+                }
+                // 3) timer is paused during the middle
+                timeLeftInMilliseconds < startTimeInMilliseconds -> {
+                    buttonTimerStartPause?.visibility = View.VISIBLE
+                    buttonTimerReset?.visibility = View.VISIBLE
+                    buttonTimerSet?.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
 
     // Update timer bar progress as time progresses
     private fun updateProgressBar() {
