@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">FocusTimer</string>
-    <string name="pause_text">pause</string>
-    <string name="start_text">start</string>
+
+    <!-- button text -->
+    <string name="btn_text_pause">pause</string>
+    <string name="btn_text_start">start</string>
+    <string name="btn_text_ok">ok</string>
+
+    <!-- strings -->
+    <string name="hint_in_minutes">In Minutes</string>
 </resources>

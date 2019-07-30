@@ -28,12 +28,10 @@ class SetTimerDialog : DialogFragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
-        if (context is OnSetTime) {
-            setTimeListener = context
-        } else {
-            throw ClassCastException(
-                    "${context.toString()} must implement OnSetTime"
-            )
+        try {
+            setTimeListener = targetFragment as OnSetTime
+        } catch (e: ClassCastException) {
+            Log.e(TAG, "onAttach: ClassCastException : " + e.message )
         }
     }
 
@@ -47,8 +45,6 @@ class SetTimerDialog : DialogFragment() {
         buttonSetTime = view.findViewById(R.id.btn_set_time)
 
         buttonSetTime?.setOnClickListener {
-            Log.d(TAG, "buttonSetTime clicked")
-
             val inputTime = editTextInputTime?.text.toString().toInt()
 
             // Todo check for empty and non-numeric inputs
@@ -72,6 +68,6 @@ class SetTimerDialog : DialogFragment() {
 
     // Interface to send time to caller
     interface OnSetTime {
-        fun setTime(time: Int)
+        fun setTime(timeInMillis: Int)
     }
 }
