@@ -24,8 +24,8 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
     private var countDownTimer: CountDownTimer? = null
 
     // Timer stuff
-    var startTimeInMilliseconds: Long = 0.toLong()
-    var timeLeftInMilliseconds = 0.toLong()
+    private var startTimeInMillis: Long = 0.toLong()
+    var timeLeftInMillis = 0.toLong()
     var isTimerRunning: Boolean = false
 
     companion object {
@@ -76,29 +76,32 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
         return view
     }
 
-    // Abstract method from SetTimerDialog to set time
-    override fun setTime(timeInMillis: Int) {
+    // Abstract methods from SetTimerDialog to set work and break times
+    override fun setWorkTime(timeInMillis: Int) {
         // Take the user value entered and convert to minute(s)
-        startTimeInMilliseconds =
+        startTimeInMillis =
                 timeInMillis * MILLIS_IN_ONE_SECOND * SECONDS_IN_ONE_MINUTE.toLong()
         resetTimer()
         resetProgressBar()
     }
 
+    override fun setBreakTime(timeInMillis: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun startTimer() {
         // In the countdown interval, by subtracting time from the interval, it fixes a bug where
         // timer would stop with 00:01 left and also makes the progress bar update more smoothly
-        countDownTimer = object : CountDownTimer(timeLeftInMilliseconds,
+        countDownTimer = object : CountDownTimer(timeLeftInMillis,
                 MILLIS_IN_ONE_SECOND.toLong() - 900) {
             override fun onTick(millisUntilFinished: Long) {
-                timeLeftInMilliseconds = millisUntilFinished
+                timeLeftInMillis = millisUntilFinished
                 progressBarUpdate?.visibility = View.VISIBLE
                 // progressBarStatic acts like an initial placeholder, then disappears when the
                 // timer starts so that progressBarUpdate takes over and updates itself
                 progressBarStatic?.visibility = View.INVISIBLE
                 updateCountDownText()
                 updateProgressBar()
-                println("timeLeftInMilliseconds = $timeLeftInMilliseconds")
             }
 
             // When onFinish() is called, set the button text to "start", make it invisible, then
@@ -120,15 +123,15 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
     }
 
     private fun resetTimer() {
-        timeLeftInMilliseconds = startTimeInMilliseconds
+        timeLeftInMillis = startTimeInMillis
         isTimerRunning = false
         updateButtonVisibility()
         updateCountDownText()
     }
 
     private fun updateCountDownText() {
-        val minutes = ((timeLeftInMilliseconds / 1000) / SECONDS_IN_ONE_MINUTE).toInt()
-        val seconds = ((timeLeftInMilliseconds / 1000) % SECONDS_IN_ONE_MINUTE).toInt()
+        val minutes = ((timeLeftInMillis / 1000) / SECONDS_IN_ONE_MINUTE).toInt()
+        val seconds = ((timeLeftInMillis / 1000) % SECONDS_IN_ONE_MINUTE).toInt()
 
         textViewCountDownTimer?.text = String.format("%02d:%02d", minutes, seconds)
     }
@@ -145,20 +148,20 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
             buttonTimerStartPause?.text = getString(R.string.btn_text_start)
             when {
                 // 1) time has been set and not started
-                timeLeftInMilliseconds == startTimeInMilliseconds -> {
+                timeLeftInMillis == startTimeInMillis -> {
                     buttonTimerStartPause?.visibility = View.VISIBLE
                     buttonTimerReset?.visibility = View.INVISIBLE
                     buttonTimerSet?.visibility = View.VISIBLE
                 }
                 // 2) timer has reached 0
-                timeLeftInMilliseconds < MILLIS_IN_ONE_SECOND -> {
+                timeLeftInMillis < MILLIS_IN_ONE_SECOND -> {
                     buttonTimerStartPause?.visibility = View.INVISIBLE
                     buttonTimerReset?.visibility = View.VISIBLE
                     buttonTimerSet?.visibility = View.VISIBLE
                     progressBarUpdate?.visibility = View.INVISIBLE
                 }
                 // 3) timer is paused during the middle
-                timeLeftInMilliseconds < startTimeInMilliseconds -> {
+                timeLeftInMillis < startTimeInMillis -> {
                     buttonTimerStartPause?.visibility = View.VISIBLE
                     buttonTimerReset?.visibility = View.VISIBLE
                     buttonTimerSet?.visibility = View.VISIBLE
@@ -169,13 +172,13 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
 
     // Update timer bar progress as time progresses
     private fun updateProgressBar() {
-        progressBarUpdate?.max = startTimeInMilliseconds.toInt()
-        progressBarUpdate?.progress = timeLeftInMilliseconds.toInt()
+        progressBarUpdate?.max = startTimeInMillis.toInt()
+        progressBarUpdate?.progress = timeLeftInMillis.toInt()
     }
 
     // Reset timer bar progress when user hits the "reset" button
     private fun resetProgressBar() {
-        progressBarUpdate?.progress = startTimeInMilliseconds.toInt()
+        progressBarUpdate?.progress = startTimeInMillis.toInt()
         progressBarUpdate?.visibility = View.VISIBLE
     }
 }
