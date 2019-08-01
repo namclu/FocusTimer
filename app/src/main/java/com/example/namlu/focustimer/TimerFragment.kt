@@ -76,13 +76,17 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
         return view
     }
 
-    // Abstract method from SetTimerDialog to set time
-    override fun setTime(timeInMillis: Int) {
+    // Abstract methods from SetTimerDialog to set work and break times
+    override fun setWorkTime(timeInMillis: Int) {
         // Take the user value entered and convert to minute(s)
         startTimeInMillis =
                 timeInMillis * MILLIS_IN_ONE_SECOND * SECONDS_IN_ONE_MINUTE.toLong()
         resetTimer()
         resetProgressBar()
+    }
+
+    override fun setBreakTime(timeInMillis: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun startTimer() {
