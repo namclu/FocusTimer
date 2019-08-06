@@ -82,7 +82,7 @@ class TimerFragment : Fragment(), SetTimerDialog.OnSetTime {
         startTimeInMillis =
                 timeInMillis * MILLIS_IN_ONE_SECOND * SECONDS_IN_ONE_MINUTE.toLong()
         resetTimer()
-        resetProgressBar()
+        updateProgressBar()
     }
 
     override fun setBreakTime(timeInMillis: Int) {
