@@ -7,6 +7,7 @@
     <string name="btn_text_ok">OK</string>
 
     <!-- strings -->
+    <string name="work_time_minutes">%d Minutes</string>
     <string name="hint_in_minutes">In Minutes</string>
     <string name="label_work">Work</string>
     <string name="label_break">Break</string>

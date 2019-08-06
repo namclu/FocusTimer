@@ -9,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.TextView
 
 class SetTimerDialog : DialogFragment() {
 
-    private var editInputWorkTime: EditText? = null
+    private var textUpdateWorkTime: TextView? = null
+    private var seekInputWorkTime: SeekBar? = null
     private var editInputBreakTime: EditText? = null
     private var buttonSetTime: Button? = null
     private lateinit var setTimeListener: OnSetTime
@@ -41,26 +44,36 @@ class SetTimerDialog : DialogFragment() {
         val view: View = inflater.inflate(R.layout.dialog_set_timer, container, false)
 
         // Find views
-        editInputWorkTime = view.findViewById(R.id.et_input_work_time)
+        seekInputWorkTime = view.findViewById(R.id.sb_input_work_time)
+        textUpdateWorkTime = view.findViewById(R.id.tv_label_work_time_minutes)
         editInputBreakTime = view.findViewById(R.id.et_input_break_time)
         buttonSetTime = view.findViewById(R.id.btn_set_time)
 
-        buttonSetTime?.setOnClickListener {
-            val inputWorkTime = editInputWorkTime?.text.toString().toInt()
+        val seekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
 
-            // Todo check for empty and non-numeric inputs
-            if (editInputWorkTime == null) {
-                dialog.dismiss()
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                // updated continuously as the user slides their thumb
+                textUpdateWorkTime?.text = getString(R.string.work_time_minutes, seekInputWorkTime?.progress)
             }
 
-            if (editInputWorkTime?.text!!.isNotEmpty()) {
-                if (inputWorkTime > 0) {
-                    // Get time and send to caller
-                    setTimeListener.setWorkTime(inputWorkTime)
-                    dialog.dismiss()
-                }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                // called when the user first touches the SeekBar
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                // called after the user finishes moving the SeekBar
+            }
+        }
+
+        seekInputWorkTime?.setOnSeekBarChangeListener(seekBarChangeListener)
+
+        buttonSetTime?.setOnClickListener {
+            val inputWorkTime = seekInputWorkTime?.progress
+            if (inputWorkTime != null) {
+                setTimeListener.setWorkTime(inputWorkTime)
+                dismiss()
             } else {
-                dialog.dismiss()
+                dismiss()
             }
         }
 
